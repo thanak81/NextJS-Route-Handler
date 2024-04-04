@@ -58,7 +58,7 @@ const createdData = await prisma.products.create(
   }
 )
  return NextResponse.json({
-  status: 200,
+  status: 201,
   payload: createdData,
   message: "Product is successfully created",
   time: new Date().toISOString()
