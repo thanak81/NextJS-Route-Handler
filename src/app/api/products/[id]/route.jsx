@@ -57,14 +57,11 @@ export async function DELETE(request, { params }) {
   });
 
   if (findProductByID === null) {
-    return NextResponse.json(
-      
-      {
-            status: 404,
-            message: "ID Not Found",
-            time: new Date().toISOString(),
-      }
-    );
+    return NextResponse.json({
+      status: 404,
+      message: "ID Not Found",
+      time: new Date().toISOString(),
+    });
   } else {
     const data = await prisma.products.delete({
       where: {
@@ -86,6 +83,38 @@ export async function DELETE(request, { params }) {
           }
     );
   }
+}
 
-  console.log(data);
+export async function PUT(request, { params }) {
+  const findProductByID = await prisma.products.findUnique({
+    where: {
+      product_id: parseInt(params.id),
+    },
+  });
+  if (findProductByID === null) {
+    return NextResponse.json({
+      status: 404,
+      message: "ID Not Found",
+      time: new Date().toISOString(),
+    });
+  } else {
+    const requestData = await request.json();
+    const data = await prisma.products.update({
+      where: {
+        product_id: parseInt(params.id),
+      },
+      data: {
+        product_name: requestData.product_name,
+        price: requestData.price,
+        categoryId: requestData.categoryId,
+      },
+    });
+
+    return NextResponse.json({
+      status: 200,
+      message: "Product is updated successfully",
+      payload: data,
+      time: new Date().toISOString(),
+    });
+  }
 }

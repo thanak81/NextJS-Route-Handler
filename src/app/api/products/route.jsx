@@ -21,6 +21,13 @@ export async function GET() {
   );
 }
 
+
+// export const GETF= async (request)=>{
+//   const url = new URL(request.url)
+//   const product_name = url.searchParams.get("");
+
+// }
+
 export async function POST(request,response){
 
   const getAllProducts = await prisma.products.findMany();

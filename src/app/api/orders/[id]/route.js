@@ -1,14 +1,15 @@
-import { PrismaClient } from '@prisma/client'
-import { NextResponse } from 'next/server'
-const prisma = new PrismaClient()
+import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
+const prisma = new PrismaClient();
 
-export async function GET(request,{params}){
-    const customer_id = params.id;
-    console.log(params.id)
-    const data = await prisma.customers.findUnique({
-        where: {customer_id : parseInt(customer_id)}
-    })
-    return NextResponse.json(
+export async function GET(request, { params }) {
+
+      const data = await prisma.orders.findUnique({
+        where: {
+          order_id: parseInt(params.id),
+        },
+      });
+      return NextResponse.json(
         data === null
           ? {
               status: 400,
@@ -22,26 +23,25 @@ export async function GET(request,{params}){
               time: new Date().toISOString(),
             }
       );
-}
-
+  }
 
 export async function DELETE(request, { params }) {
-    const findCustomersID = await prisma.customers.findUnique({
+    const findOrderByID = await prisma.orders.findUnique({
       where: {
-        customer_id: parseInt(params.id),
+        order_id: parseInt(params.id),
       },
     });
   
-    if (findCustomersID === null) {
+    if (findOrderByID === null) {
       return NextResponse.json({
         status: 404,
         message: "ID Not Found",
         time: new Date().toISOString(),
       });
     } else {
-      const data = await prisma.customers.delete({
+      const data = await prisma.orders.delete({
         where: {
-          customer_id: parseInt(params.id),
+          order_id: parseInt(params.id),
         },
       });
       return NextResponse.json(
@@ -53,22 +53,21 @@ export async function DELETE(request, { params }) {
             }
           : {
               status: 200,
-              message: "Customer is successfully deleted",
+              message: "Order is successfully deleted",
               payload: data,
               time: new Date().toISOString(),
             }
       );
     }
   }
-
-
+  
   export async function PUT(request, { params }) {
-    const findCustomerByID = await prisma.customers.findUnique({
+    const findOrdertyID = await prisma.orders.findUnique({
       where: {
-        customer_id: parseInt(params.id),
+        order_id: parseInt(params.id),
       },
     });
-    if (findCustomerByID === null) {
+    if (findOrdertyID === null) {
       return NextResponse.json({
         status: 404,
         message: "ID Not Found",
@@ -76,23 +75,22 @@ export async function DELETE(request, { params }) {
       });
     } else {
       const requestData = await request.json();
-      const data = await prisma.customers.update({
+      const data = await prisma.orders.update({
         where: {
-            customer_id: parseInt(params.id),
+          order_id: parseInt(params.id),
         },
         data: {
-          first_name: requestData.first_name,
-          last_name: requestData.last_name,
-          birth_date: requestData.birth_date,
-        },
+            productId: requestData.productId,
+            order_qty: requestData.order_qty,
+            customerId: requestData.customerId,
+          },
       });
   
       return NextResponse.json({
         status: 200,
-        message: "Customer is updated successfully",
+        message: "Order is updated successfully",
         payload: data,
         time: new Date().toISOString(),
       });
     }
   }
-  

@@ -49,5 +49,6 @@ model customers{
   first_name String @db.VarChar(100)
   last_name String @db.VarChar(100)
   birth_date DateTime
+  money_spent Float @db.DoublePrecision
   Order orders[]
 }
